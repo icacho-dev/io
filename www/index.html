@@ -167,7 +167,7 @@
         <!-- feed -->
         <div class="list card">
           <div class="item item-divider">
-            Comunidad Ecofilm | {{loadingReloadHomeFeed}}
+            Comunidad Ecofilm
           </div>
           <div class="item item-text-wrap item-icon-right" ng-repeat="item in App.Feed" ng-click="openDetail(item.Link)">
             <i class="{{item.Icon}}"></i>
@@ -182,10 +182,13 @@
           <div class="item item-divider">
             {{typeSponsor.Descripcion_ES}}
           </div>
-          <div class="item item-body">
-            <div class="row gallery">
-              <div class="col col-50" ng-repeat="sponsor in typeSponsor.ListSponsor">
-                <img ng-src="{{sponsor.Image}}" class="full-image">
+          <div class="item">
+            <div class="row gallery" ng-if="$even" ng-repeat="sponsor in typeSponsor.ListSponsor">
+              <div class="col col-50">
+                <img ng-src="{{typeSponsor.ListSponsor[$index].Image}}" class="full-image">
+              </div>
+              <div class="col col-50">
+                <img ng-src="{{typeSponsor.ListSponsor[$index+1].Image}}" class="full-image">
               </div>
             </div>
           </div>
@@ -500,7 +503,7 @@
               <span class="text-muted">{{EventDetail.Place.Address}}</span>
             </p>
           </div>
-          <div class="item  item-divider text-muted text-center">
+          <div class="item item-divider text-muted text-center">
             <a class="roundCornersAllDark" href="#" ng-click="openDetail(EventDetail.Place.Url)">
               <i class="icon ion-map"></i>&nbsp;&nbsp; Ver Mapa
             </a>
