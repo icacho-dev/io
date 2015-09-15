@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+  <title>ECOFILM Festival</title>
+
+  <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+
+  <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+    <link href="css/ionic.app.css" rel="stylesheet">
+    -->
+  <style>
+    .angular-google-map-container {
+      width: 100%;
+      height: 504px;
+    }
+  </style>
+  <!-- ionic/angularjs js -->
+  <script src="lib/ionic/js/ionic.bundle.js"></script>
+
+  <!-- cordova script (this will be a 404 during development) -->
+  <script src="cordova.js"></script>
+
+  <!-- your app's js -->
+  <script src="js/app/app.js"></script>
+  <script src="js/app/controllers.js"></script>
+  <script src="js/app/services.js"></script>
+</head>
+
+<body ng-controller="appCtrl">
+
+  <ion-nav-view></ion-nav-view>
+
+  <script id="templates/app-menu.html" type="text/ng-template">
+    <ion-side-menus enable-menu-with-back-views="true">
+
+      <ion-side-menu-content>
+        <ion-nav-bar class="bar-dark">
+          <ion-nav-back-button></ion-nav-back-button>
+          <ion-nav-buttons side="left">
+            <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+          </ion-nav-buttons>
+          <ion-nav-buttons side="right" ng-show="IsOnline">
+            <button class="button button-icon button-clear ion-android-share-alt" menu-toggle="right"></button>
+          </ion-nav-buttons>
+        </ion-nav-bar>
+
+        <ion-nav-view name="menuContent"></ion-nav-view>
+      </ion-side-menu-content>
+
+      <ion-side-menu side="right" ng-if="IsOnline">
+        <ion-header-bar class="bar-calm">
+          <h1 class="title">COMUNIDAD ECOFILM</h1>
+        </ion-header-bar>
+        <ion-content>
+          <div class="list">
+            <div class="item item-text-wrap item-icon-right" ng-repeat="item in listRighFeed" ng-click="openDetail(item.Link)" ng-if="item.Message.length > 0">
+              <i class=" {{item.Icon}} "></i>
+              <small class="font-bold">@EcofilmFestivalMx</small>
+              <small class="text-muted">{{item.Message}}</small>
+              <br />
+              <span class="text-muted-2x font-sm">{{item.Update}}</span>
+            </div>
+          </div>
+          <ion-infinite-scroll on-infinite="LoadRighFeed()" distance="1%"></ion-infinite-scroll>
+        </ion-content>
+      </ion-side-menu>
+
+      <ion-side-menu side="left">
+        <ion-content>
+          <div class="row row-no-padding padding-top padding-bottom">
+            <div class="col"></div>
+            <div class="col col-50">
+              <img ng-src="img/logo-header-circle.png" alt="" class="full-image" />
+            </div>
+            <div class="col"></div>
+          </div>
+          <div class="list">
+            <a class="item item-icon-left" menu-close ui-sref-active="active" ui-sref="app.home">
+              <i class="icon ion-ios-home-outline"></i> Inicio
+            </a>
+            <a class="item item-icon-left" menu-close ui-sref-active="active" ui-sref="app.official">
+              <i class="icon ion-ios-list-outline"></i> Selección Oficial
+            </a>
+            <a class="item item-icon-left" menu-close ui-sref-active="active" ui-sref="app.schedule">
+              <i class="icon ion-ios-calendar-outline"></i> Programa
+            </a>
+            <a class="item item-icon-left" menu-close ui-sref-active="active" ui-sref="app.places">
+              <i class="icon ion-ios-location-outline"></i> Sedes
+            </a>
+            <a class="item item-icon-left" menu-close ui-sref-active="active" ui-sref="app.sponsor">
+              <i class="icon ion-ios-lightbulb-outline"></i> Patrocinadores
+            </a>
+            <a class="item item-icon-left" menu-close ui-sref-active="active" ui-sref="app.winners">
+              <i class="icon ion-trophy"></i> Ganadores
+            </a>
+          </div>
+        </ion-content>
+      </ion-side-menu>
+
+    </ion-side-menus>
+  </script>
+
+  <script id="templates/app-home.html" type="text/ng-template">
+    <ion-view view-title="ECOFILM FESTIVAL" hide-back-button="true">
+      <ion-content class="">
+        <!-- header -->
+        <div class="row row-no-padding ecoapp section-header sh-bg2">
+          <div class="col">
+            <div class="row" style="height:300px;">
+              <div class="col">
+                <object id='logoObject' class="logoObject-home" type="image/svg+xml" data="img/logo-app-w.svg">
+                  <param name="src" value="img/logo-app-w.svg">
+                </object>
+              </div>
+            </div>
+            <div class="row" style="background-color:rgba(0,0,0,.5);">
+              <div class="col padding ecoapp-avatar-right-home">
+                <img ng-src="img/logo-header-circle.png" alt="" />
+                <h3 class="energized">INICIO</h3>
+                <!-- status -->
+                <p ng-if="!IsOnline">
+                  <i class="icon ion-ios-close assertive"></i>
+                  <span class="stable">
+                    Status:
+                    <strong>Offline</strong>
+                  </span>
+                </p>
+                <p ng-if="IsOnline">
+                  <i class="icon ion-ios-checkmark balanced"></i>
+                  <span class="stable">
+                    Status:
+                    <strong>Online</strong>
+                  </span>
+                </p>
+                <!--/status -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--/header -->
+        <!-- dummy buttons -->
+        <div class="row row-no-padding" style="margin-top:0px;">
+          <div class="col col-50 text-center padding-10 button-header" click-link="app/schedule" style="background-color: #E64444;">
+            <i class="icon ion-ios-calendar-outline font-xl"></i>
+            <p class="font-bold">Programa</p>
+          </div>
+          <div class="col col-50 text-center padding-10 button-header" click-link="app/places" style="background-color: #554685;">
+            <i class="icon ion-ios-location-outline font-xl"></i>
+            <p class="font-bold">Sedes</p>
+          </div>
+        </div>
+        <div class="row row-no-padding" style="margin-top:0px;">
+          <div class="col col-50 text-center padding-10 button-header" click-link="app/official" style="background-color: #A73B55;">
+            <i class="icon ion-ios-list-outline font-xl"></i>
+            <p class="font-bold">Selección Oficial</p>
+          </div>
+          <div class="col col-50 text-center padding-10 button-header" click-link="app/winners" style="background-color: #7D406D;">
+            <i class="icon ion-trophy font-xl"></i>
+            <p class="font-bold">Ganadores</p>
+          </div>
+        </div>
+        <!--/dummy buttons -->
+        <!-- feed -->
+        <div class="list card">
+          <div class="item item-divider">
+            Comunidad Ecofilm | {{loadingReloadHomeFeed}}
+          </div>
+          <div class="item item-text-wrap item-icon-right" ng-repeat="item in App.Feed" ng-click="openDetail(item.Link)">
+            <i class="{{item.Icon}}"></i>
+            <small class="text-muted">{{item.Message}}</small>
+            <br />
+            <span class="text-muted-2x font-sm">{{item.Update}}</span>
+          </div>
+        </div>
+        <!--/feed -->
+        <!-- patrocinadores -->
+        <div class="list card" ng-repeat="typeSponsor in App.ListSponsor">
+          <div class="item item-divider">
+            {{typeSponsor.Descripcion_ES}}
+          </div>
+          <div class="item item-body">
+            <div class="row gallery">
+              <div class="col col-50" ng-repeat="sponsor in typeSponsor.ListSponsor">
+                <img ng-src="{{sponsor.Image}}" class="full-image">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--/patrocinadores -->
+        <!-- banners -->
+        <div class="list card" ng-if="false">
+          <div class="item item-body">
+            <img ng-src="img/bg1.jpg" class="full-image">
+            <p>Banner leyenda bajo imagen.</p>
+          </div>
+          <div class="item item-divider text-muted text-center">
+            <a class="roundCornersAllDark" href="#" ng-click="viewDetailEvent(event)">
+              <i class="icon ion-ios-arrow-right"></i>&nbsp;&nbsp; Ver más
+            </a>
+          </div>
+        </div>
+        <!--/banners -->
+      </ion-content>
+    </ion-view>
+  </script>
+
+  <script id="templates/official.html" type="text/ng-template">
+    <ion-view view-title="Selección Oficial" hide-back-button="true">
+      <ion-content class="">
+        <!-- header -->
+        <div class="row row-no-padding ecoapp section-header sh-bg2">
+          <div class="col">
+            <div class="row" style="height:160px;">
+              <div class="col">
+              </div>
+            </div>
+            <div class="row" style="background-color:rgba(0,0,0,.5);">
+              <div class="col padding ecoapp-avatar-right">
+                <img ng-src="img/logo-header-circle.png" alt="" />
+                <h3 class="energized">SELECCIÓN OFICIAL</h3>
+                <!-- status -->
+                <p ng-if="!IsOnline">
+                  <i class="icon ion-ios-close assertive"></i>
+                  <span class="stable">
+                    Status:
+                    <strong>Offline</strong>
+                  </span>
+                </p>
+                <p ng-if="IsOnline">
+                  <i class="icon ion-ios-checkmark balanced"></i>
+                  <span class="stable">
+                    Status:
+                    <strong>Online</strong>
+                  </span>
+                </p>
+                <!--/status -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--/header -->
+        <!-- filtros -->
+        <div class="list list-inset">
+          <label class="item item-input">
+            <i class="icon ion-search placeholder-icon"></i>
+            <input type="text" placeholder="Buscar" ng-model="filterOfficialSelection.Search">
+          </label>
+          <label class="item item-input item-select">
+            <div class="input-label">
+              Categoría
+            </div>
+            <select ng-model="filterOfficialSelection.CategoriaId" ng-options="option.Id as option.Title_ES for option in OfficialSelection.ListCategoria">
+              <option value>-- Todos --</option>
+            </select>
+          </label>
+          <label class="item item-input item-select">
+            <div class="input-label">
+              Nacionalidad
+            </div>
+            <select ng-model="filterOfficialSelection.NacionalidadId" ng-options="option.Id as option.Title_ES for option in OfficialSelection.ListNacionalidad">
+              <option value>-- Todos --</option>
+            </select>
+          </label>
+        </div>
+        <!--/filtros -->
+        <div class="list">
+          <a class="item item-text-wrap item-icon-left item-icon-right" ng-href="#/app/shortfilm/{{item.Id}}" ng-repeat="item in ListOfficialSelectionShortFilmFilter">
+            <i class="icon ion-ios-film-outline text-muted-2x"></i>
+            <p class="font-bold">{{item.Titulo_Original}}</p>
+            <dfn class="font-sm text-muted-2x" style="text-transform: ;">
+              <span class="categoria-{{item.Categoria.Id}} label">{{item.Categoria.Title_ES}}</span> | {{item.Nacionalidad.Title_ES}}
+              <br /> Director: {{item.DirectorCorto}}
+            </dfn>
+            <i class="icon ion-ios-arrow-right"></i>
+          </a>
+        </div>
+      </ion-content>
+    </ion-view>
+  </script>
+
+  <script id="templates/schedule.html" type="text/ng-template">
+    <ion-view view-title="Programa" hide-back-button="true">
+      <ion-content class="">
+        <!-- header -->
+        <div class="row row-no-padding ecoapp section-header sh-bg1">
+          <div class="col">
+            <div class="row" style="height:160px;">
+              <div class="col">
+              </div>
+            </div>
+            <div class="row" style="background-color:rgba(0,0,0,.5);">
+              <div class="col padding ecoapp-avatar-right">
+                <img ng-src="img/logo-header-circle.png" alt="" />
+                <h3 class="energized">PROGRAMA</h3>
+                <!-- status -->
+                <p ng-if="!IsOnline">
+                  <i class="icon ion-ios-close assertive"></i>
+                  <span class="stable">
+                    Status:
+                    <strong>Offline</strong>
+                  </span>
+                </p>
+                <p ng-if="IsOnline">
+                  <i class="icon ion-ios-checkmark balanced"></i>
+                  <span class="stable">
+                    Status:
+                    <strong>Online</strong>
+                  </span>
+                </p>
+                <!--/status -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--/header -->
+        <!-- filtros -->
+        <div class="list list-inset">
+          <div class="item item-input item-select">
+            <div class="input-label">
+              Día
+            </div>
+            <select ng-model="filterSchedule.DateFilter" ng-options="option.DateObj as option.DateString for option in App.ListDays">
+              <option value>-- Todos --</option>
+            </select>
+          </div>
+          <div class="item item-input item-select" ng-show="filterEventPlaces.length > 0">
+            <div class="input-label">
+              Sede
+            </div>
+            <select ng-model="filterSchedule.PlaceFilter" ng-options="option.Place.Id as option.Place.Title_ES for option in filterEventPlaces">
+              <option value>-- Todas --</option>
+            </select>
+          </div>
+        </div>
+        <!--/filtros -->
+        <!-- items-programa -->
+        <div class="list card" ng-repeat="event in ListEventFilter">
+          <!-- titulo -->
+          <!--<div class="item item-icon-left light {{event.ClassNameType}}">
+                        <i class="{{event.IconType}}"></i>{{event.Type_ES}}
+                    </div>-->
+          <!--/titulo -->
+          <div class="item">
+            <div class="row">
+              <div class="col col-33 text-center">
+                <p class="calendar">{{event.Date.Day}}
+                  <em>{{event.Date.MonthString}}</em>
+                </p>
+              </div>
+              <div class="col">
+                <div class="item-text-wrap font-bold">
+                  <span><i class="{{event.IconType}} text-muted-2x"></i></span> {{event.Event_ES}}</div>
+                <dfn class="text-muted">
+                  <span class="{{event.ClassNameType}} label font-sm">{{event.Type_ES}}</span>
+                  <br />
+                  <i class="icon ion-ios-clock-outline text-muted-2x"></i> De {{event.Start}} a {{event.End}}
+                  <br />
+                  <i class="icon ion-ios-location-outline text-muted-2x"></i> Sede: {{event.Place.Title_ES}}
+                  <br />
+                  <i class="icon ion-ios-flag-outline text-muted-2x" ng-if="event.Site_ES.length > 0"></i>
+                  <span ng-if="event.Site_ES.length > 0">Lugar: {{event.Site_ES}}</span>
+                </dfn>
+                <dfn class="paragraph-wrap-text small">
+                  {{event.Description_ES}}
+                </dfn>
+              </div>
+            </div>
+          </div>
+          <!-- botones -->
+          <a class="item item-divider item-icon-right" ng-href="#/app/event/{{event.Id}}/{{event.TypeFilter}}">
+            <i class="icon ion-ios-arrow-right"></i> Ver más...
+          </a>
+          <!-- botones -->
+        </div>
+        <!--/items-programa -->
+        <div class="item item-divider" ng-if="consoleActive">
+          <pre>
+            {{FilterPrograma | json}} ---------------------------------------- {{App.ListEvent | json}}
+          </pre>
+        </div>
+      </ion-content>
+    </ion-view>
+  </script>
+
+  <script id="templates/event.html" type="text/ng-template">
+    <ion-view view-title="Evento" hide-back-button="false">
+      <ion-content>
+        <!-- header -->
+        <div class="row row-no-padding ecoapp section-header sh-bg5" ng-style="{'background-image': 'url(' + EventDetail.ImageEvent + ')'}">
+          <div class="col">
+            <div class="row" style="height:160px;">
+              <div class="col">
+              </div>
+            </div>
+            <div class="row" style="background-color:rgba(0,0,0,.5);">
+              <div class="col padding ecoapp-avatar-right">
+                <img ng-src="img/logo-header-circle.png" alt="" />
+                <h3 class="energized">{{EventDetail.Event_ES}}</h3>
+                <!-- status -->
+                <p ng-if="!IsOnline">
+                  <i class="icon ion-ios-close assertive"></i>
+                  <span class="stable">
+                    Status:
+                    <strong>Offline</strong>
+                  </span>
+                </p>
+                <p ng-if="IsOnline">
+                  <i class="icon ion-ios-checkmark balanced"></i>
+                  <span class="stable">
+                    Status:
+                    <strong>Online</strong>
+                  </span>
+                </p>
+                <!--/status -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--/header -->
+        <!-- Detalles Evento-->
+        <div class="list">
+          <div class="item">
+            <div class="row">
+              <div class="col col-33">
+                <p class="calendar">{{EventDetail.Date.Day}}
+                  <em>{{EventDetail.Date.MonthString}}</em>
+                </p>
+              </div>
+              <div class="col">
+                <dfn class="text-muted">
+                  <i class="{{EventDetail.IconType}} text-muted-2x "></i>
+                  <span class="{{EventDetail.ClassNameType}} label font-sm">{{EventDetail.Type_ES}}</span>
+                  <br />
+                  <i class="icon ion-ios-clock-outline text-muted-2x"></i> De {{EventDetail.Start}} a {{EventDetail.End}}
+                  <br />
+                  <i class="icon ion-ios-location-outline text-muted-2x"></i> Sede: {{EventDetail.Place.Title_ES}}
+                  <br />
+                  <i class="icon ion-ios-flag-outline text-muted-2x" ng-if="EventDetail.Site_ES.length > 0"></i>
+                  <span ng-if="EventDetail.Site_ES.length > 0">Lugar: {{EventDetail.Site_ES}}</span>
+                </dfn>
+              </div>
+            </div>
+          </div>
+          <div class="item item-text-wrap" ng-if="EventDetail.Description_ES.length > 0">
+            <p>
+              <strong>{{EventDetail.Description_ES}}</strong>
+            </p>
+          </div>
+        </div>
+        <!--/Detalles Evento-->
+        <!-- ListShortFilms (condicionar)-->
+        <div class="list card" ng-if="EventDetail.ListShortFilms.length > 0">
+          <div class="item item-divider text-muted ">
+            Selección Oficial
+          </div>
+          <a class="item item-text-wrap item-icon-left item-icon-right" ng-href="#/app/shortfilm/{{item.Id}}" ng-repeat="item in EventDetail.ListShortFilms">
+            <i class="icon ion-ios-film-outline text-muted-2x"></i>
+            <p class="font-bold">{{item.Titulo_Original}}</p>
+            <dfn class="font-sm text-muted-2x" style="text-transform: ;">
+              <span class="categoria-{{item.Categoria.Id}} label">{{item.Categoria.Title_ES}}</span> | {{item.Nacionalidad.Title_ES}}
+              <br /> Director: {{item.DirectorCorto}}
+              <br/> {{item.ListEvento[0].Start}} - {{item.ListEvento[0].End}}
+            </dfn>
+            <i class="icon ion-ios-arrow-right"></i>
+          </a>
+        </div>
+        <!--/ListShortFilms -->
+        <!-- ListShortFilmsMuestra-->
+        <div class="list card" ng-if="EventDetail.ListShortFilmsMuestra.length > 0">
+          <div class="item item-divider text-muted ">
+            Muestra
+          </div>
+          <div class="item item-text-wrap item-icon-left " ng-repeat="item in EventDetail.ListShortFilmsMuestra">
+            <i class="icon ion-ios-videocam-outline text-muted-2x"></i>
+            <p class="font-bold">{{item.Titulo_Espanol}}</p>
+            <dfn class="font-sm text-muted-2x" style="text-transform: ;">
+              <span class="categoria-muestra label">Muestra</span> | Pais: {{item.Pais}}
+              <br /> Director: {{item.Director}}
+              <br/> Sinopsis: {{item.Sinopsis_Espanol}}
+            </dfn>
+          </div>
+        </div>
+        <!--/ListShortFilmsMuestra -->
+        <!-- sede -->
+        <div class="list card">
+          <div class="item item-divider text-muted">
+            Sede
+          </div>
+          <div class="item text-center">
+            <img ng-src="{{EventDetail.Place.Image}}" alt="" />
+            <p>
+              <span class="font-bold">{{EventDetail.Place.Title_ES}}</span>
+              <br />
+              <span class="text-muted">{{EventDetail.Site_ES}}</span>
+              <br />
+              <span class="text-muted">{{EventDetail.Place.Address}}</span>
+            </p>
+          </div>
+          <div class="item  item-divider text-muted text-center">
+            <a class="roundCornersAllDark" href="#" ng-click="openDetail(EventDetail.Place.Url)">
+              <i class="icon ion-map"></i>&nbsp;&nbsp; Ver Mapa
+            </a>
+          </div>
+        </div>
+        <!--/sede -->
+        <!-- random sponsor-->
+        <!--<div class="list">
+          <div class="item item-divider text-muted">
+            sParent {{sParent = randListIndex(App.ListSponsor.length)}}
+          </div>
+          <div class="item">
+            dd
+          </div>
+        </div>-->
+        <!--/random sponsor-->
+        <pre ng-if="consoleActive">
+          {{App.ListSponsor.length | json}}
+          <hr/> {{App.ListSponsor | json}}
+        </pre>
+      </ion-content>
+    </ion-view>
+  </script>
+
+  <script id="templates/places.html" type="text/ng-template">
+    <ion-view view-title="Sedes" hide-back-button="true">
+      <ion-content class="">
+        <!-- header -->
+        <div class="row row-no-padding ecoapp section-header sh-bg4">
+          <div class="col">
+            <div class="row" style="height:160px;">
+              <div class="col">
+              </div>
+            </div>
+            <div class="row" style="background-color:rgba(0,0,0,.5);">
+              <div class="col padding ecoapp-avatar-right">
+                <img ng-src="img/logo-header-circle.png" alt="" />
+                <h3 class="energized">SEDES</h3>
+                <!-- status -->
+                <p ng-if="!IsOnline">
+                  <i class="icon ion-ios-close assertive"></i>
+                  <span class="stable">
+                    Status:
+                    <strong>Offline</strong>
+                  </span>
+                </p>
+                <p ng-if="IsOnline">
+                  <i class="icon ion-ios-checkmark balanced"></i>
+                  <span class="stable">
+                    Status:
+                    <strong>Online</strong>
+                  </span>
+                </p>
+                <!--/status -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--/header -->
+        <div class="list card" ng-repeat="place in App.ListPlaces">
+
+          <div class="item item-text-wrap">
+            <div class="row">
+              <div class="col"></div>
+              <div class="col col-75">
+                <img ng-src="{{place.Image}}" class="full-image">
+              </div>
+              <div class="col"></div>
+            </div>
+            <div class="row row-no-padding">
+              <div class="col">
+                <span><i class="icon ion-ios-location positive"></i>&nbsp;
+                  <strong>{{place.Title_ES}}</strong>
+                </span>
+                <br />
+                <small class="text-muted">{{place.Address}}</small>
+                <br />
+              </div>
+            </div>
+          </div>
+          <div class="item item-stable text-center">
+            <a href="#" class="roundCornersAllDark" ng-click="openDetail(place.Url)">
+              <i class="icon ion-map"></i>&nbsp;&nbsp;Ir a Mapa
+            </a>
+          </div>
+          <!--<a class="item item-divider item-icon-right" href="#" ng-click="openDetail(place.Url)">
+                  <i class="icon ion-map"></i>Ir a Mapa
+                </a>-->
+        </div>
+      </ion-content>
+    </ion-view>
+  </script>
+
+  <script id="templates/sponsor.html" type="text/ng-template">
+    <ion-view view-title="Patrocinadores" hide-back-button="true">
+      <ion-content class="">
+        <!-- header -->
+        <div class="row row-no-padding ecoapp section-header sh-bg3">
+          <div class="col">
+            <div class="row" style="height:160px;">
+              <div class="col">
+              </div>
+            </div>
+            <div class="row" style="background-color:rgba(0,0,0,.5);">
+              <div class="col padding ecoapp-avatar-right">
+                <img ng-src="img/logo-header-circle.png" alt="" />
+                <h3 class="energized">PATROCINADORES</h3>
+                <!-- status -->
+                <p ng-if="!IsOnline">
+                  <i class="icon ion-ios-close assertive"></i>
+                  <span class="stable">
+                    Status:
+                    <strong>Offline</strong>
+                  </span>
+                </p>
+                <p ng-if="IsOnline">
+                  <i class="icon ion-ios-checkmark balanced"></i>
+                  <span class="stable">
+                    Status:
+                    <strong>Online</strong>
+                  </span>
+                </p>
+                <!--/status -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--/header -->
+        <!-- patrocinadores -->
+        <div class="list card" ng-repeat="typeSponsor in App.ListSponsor">
+          <div class="item item-divider">
+            {{typeSponsor.Descripcion_ES}}
+          </div>
+          <div class="item text-center" ng-repeat="sponsor in typeSponsor.ListSponsor">
+            <img ng-src="{{sponsor.Image}}">
+            <p><b>{{sponsor.Title_ES}}</b></p>
+            <small class="text-muted-2x">{{sponsor.WebSite}}</small>
+          </div>
+        </div>
+        <!--/patrocinadores -->
+      </ion-content>
+    </ion-view>
+  </script>
+
+  <script id="templates/winners.html" type="text/ng-template">
+    <ion-view view-title="ECOFILM 2015" hide-back-button="true">
+      <ion-content class="">
+        <!-- header -->
+        <div class="row row-no-padding ecoapp section-header sh-bg6">
+          <div class="col">
+            <div class="row" style="height:160px;">
+              <div class="col">
+              </div>
+            </div>
+            <div class="row" style="background-color:rgba(0,0,0,.5);">
+              <div class="col padding ecoapp-avatar-right">
+                <img ng-src="img/logo-header-circle.png" alt="" />
+                <h3 class="energized">GANADORES</h3>
+                <!-- status -->
+                <p ng-if="!IsOnline">
+                  <i class="icon ion-ios-close assertive"></i>
+                  <span class="stable">
+                    Status:
+                    <strong>Offline</strong>
+                  </span>
+                </p>
+                <p ng-if="IsOnline">
+                  <i class="icon ion-ios-checkmark balanced"></i>
+                  <span class="stable">
+                    Status:
+                    <strong>Online</strong>
+                  </span>
+                </p>
+                <!--/status -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--/header -->
+        <div class="card">
+          <div class="item item-text-wrap">
+            {{Winners.WinnersMsg}}
+          </div>
+        </div>
+        <div class="card" ng-repeat="item in Winners.ListShortFilmWinners">
+          <div class="item item-divider">
+            {{item.Descripcion_Ganador_ES}}
+          </div>
+          <div class="item item-image">
+            <img ng-src="{{item.Still.Host + item.Still.Path + item.Still.File}}">
+          </div>
+          <a class="item item-text-wrap item-icon-left item-icon-right" ng-href="#/app/shortfilm/{{item.Id}}">
+            <i class="icon ion-ios-film-outline text-muted-2x"></i>
+            <p class="font-bold">{{item.Titulo_Original}}</p>
+            <dfn class="font-sm text-muted-2x" style="text-transform: ;">
+              <span class="categoria-{{item.Categoria.Id}} label">{{item.Categoria.Title_ES}}</span> | {{item.Nacionalidad.Title_ES}}
+              <br /> Director: {{item.DirectorCorto}}
+            </dfn>
+            <i class="icon ion-ios-arrow-right"></i>
+          </a>
+        </div>
+        <pre ng-if="consoleActive">
+          {{Winners | json}}
+        </pre>
+      </ion-content>
+    </ion-view>
+  </script>
+
+  <script id="templates/shortfilm.html" type="text/ng-template">
+    <ion-view view-title="ECOFILM 2015" hide-back-button="false">
+      <ion-content class="">
+        <!-- header -->
+        <div class="row row-no-padding ecoapp section-header sh-bg2" ng-style="{'background-image': 'url(' + activeShortFilm.ListImagenStill[0].Host+activeShortFilm.ListImagenStill[0].Path+activeShortFilm.ListImagenStill[0].File + ')'}">
+          <div class="col">
+            <div class="row" style="height:160px;">
+              <div class="col">
+              </div>
+            </div>
+            <div class="row" style="background-color:rgba(0,0,0,.5);">
+              <div class="col padding">
+                <h3 class="energized">{{activeShortFilm.Titulo_Espanol}}</h3>
+                <!-- status -->
+                <span class="text-muted-2x"><i class="icon ion-ios-film-outline"></i>&nbsp;Categoría : </span>
+                <span class="light">{{activeShortFilm.Categoria.Title_ES}}</span>
+                <!--/status -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--/header -->
+        <!-- director -->
+        <div class="list card">
+          <div class="item item-avatar">
+            <img ng-src="{{activeShortFilm.ListImagenAutor[0].Host + activeShortFilm.ListImagenAutor[0].Path + activeShortFilm.ListImagenAutor[0].File}}" />
+            <h2>{{activeShortFilm.DirectorCorto}}</h2>
+            <p>Director</p>
+          </div>
+        </div>
+        <!--/director -->
+        <!-- detalles -->
+        <div class="list card">
+          <div class="item  item-divider text-muted item-icon-right">
+            <i class="icon ion-document-text"></i> Detalles
+          </div>
+          <div class="item item-body shortfilm-body">
+            <dfn>
+              <span>Titulo</span>
+              <br/>
+              <span style=" font-size: xx-large; color: black; line-height: 1em; ">{{activeShortFilm.Titulo_Espanol}}</span>
+            </dfn>
+            <dfn>
+              <span>Categoría</span>
+              <br/> {{activeShortFilm.Categoria.Title_ES}}</dfn>
+            <dfn>
+              <span>Nacionalidad</span>
+              <br/> {{activeShortFilm.Nacionalidad.Title_ES}}</dfn>
+            <dfn>
+              <span>País</span>
+              <br/> {{activeShortFilm.Pais_ES}}</dfn>
+            <dfn>
+              <span>Idioma</span>
+              <br/> {{activeShortFilm.Idioma}}</dfn>
+            <dfn>
+              <span>Duración (m:s)</span>
+              <br/> {{activeShortFilm.Duracion_Minutos}}:{{activeShortFilm.Duracion_Segundos}}</dfn>
+            <dfn ng-if="activeShortFilm.Sinopsis_Espanol.length > 0">
+              <span>Sinopsis</span>
+              <br/> {{activeShortFilm.Sinopsis_Espanol}}</dfn>
+          </div>
+        </div>
+        <!--/detalles -->
+        <!-- eventos -->
+        <div class="list card" ng-if="activeShortFilm.ListEvento.length > 0">
+          <div class="item item-stable item-icon-right">
+            <i class="icon ion-android-calendar"></i> Eventos
+          </div>
+          <a class="item item-icon-left item-icon-right" ng-repeat="item in activeShortFilm.ListEvento" ng-href="#/app/event/{{item.Id}}/{{item.TypeFilter}}">
+            <i class="{{item.IconType}} text-muted-2x"></i>
+            <h2 class="">{{item.Type_ES}}</h2>
+            <small class="font-sm text-muted text-uppercase">{{item.Date.DateString}}, {{item.Place.Title_ES}}</small>
+            <i class="icon ion-ios-arrow-right"></i>
+          </a>
+        </div>
+        <!--/eventos -->
+        <!-- equipo -->
+        <div class="list card" ng-if="false">
+          <div class="item item-divider text-muted item-icon-right">
+            <i class="icon ion-ios-film-outline"></i> Equipo
+          </div>
+          <div class="item" ng-repeat="item in activeShortFilm.ListEquipo">
+            <h2 class="">{{item.Nombre}}</h2>
+            <small class="font-sm text-muted text-uppercase">{{item.TipoEquipo_ES}}</small>
+          </div>
+        </div>
+        <!--/equipo -->
+        <pre ng-if="consoleActive">
+          {{activeShortFilm | json}}
+        </pre>
+      </ion-content>
+    </ion-view>
+  </script>
+</body>
+
+</html>
