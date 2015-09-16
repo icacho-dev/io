@@ -112,9 +112,11 @@
           <div class="col">
             <div class="row" style="height:300px;">
               <div class="col">
-                <object id='logoObject' class="logoObject-home" type="image/svg+xml" data="img/logo-app-w.svg">
+                <!--<object id='logoObject' class="logoObject-home" type="image/svg+xml" data="img/logo-app-w.svg">
                   <param name="src" value="img/logo-app-w.svg">
-                </object>
+                </object>-->
+                <div class="logo-container">
+                </div> 
               </div>
             </div>
             <div class="row" style="background-color:rgba(0,0,0,.5);">
@@ -783,7 +785,8 @@
           <a class="item item-icon-left item-icon-right" ng-repeat="item in activeShortFilm.ListEvento" ng-href="#/app/event/{{item.Id}}/{{item.TypeFilter}}">
             <i class="{{item.IconType}} text-muted-2x"></i>
             <h2 class="">{{item.Type_ES}}</h2>
-            <small class="font-sm text-muted text-uppercase">{{item.Date.DateString}}, {{item.Place.Title_ES}}</small>
+            <small class="font-sm text-muted text-uppercase">{{item.Date.DateString}}, {{item.Place.Title_ES}}</small><br/>
+            <small class="text-muted text-uppercase"><dfn>De {{item.Start}} a {{item.End}}</dfn></small>
             <i class="icon ion-ios-arrow-right"></i>
           </a>
         </div>

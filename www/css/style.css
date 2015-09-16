@@ -358,15 +358,32 @@ a.roundCornersAllDark:hover {
   padding: 0 5px;
   color: white;
 }
+
+
 .logoObject {
   max-height: 150px;
-  width: 100%;
+  width: 100%!important;
 }
 .logoObject-home {
   max-height: 150px;
-  width: 100%;
+  width: 100%!important;
   margin-top: 70px;
 }
+
+.logo-container {  
+  width: 100%;  
+  margin: 0 auto;
+  /* just to get an apsect ratio same as the SVG's: */
+  margin-top: 40px;
+  padding-top: 48%; 
+  height: 0; 
+  background-image: url(../img/logo-app-w.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+
+
 .text-lowercase {
   text-transform: lowercase;
 }
