@@ -73,6 +73,7 @@ angular.module('app.controllers', ['ionic'])
       // ----------------------------
       $scope.Initialize = function(goHome) {
         var _msgSuccess = function(data) {
+          $scope.IsInitialize = true;
           $scope.IsOnline = true;
           $ionicLoading.hide();
           $scope.GetFilterSchedule();
@@ -86,8 +87,7 @@ angular.module('app.controllers', ['ionic'])
           template: 'ECOFILM FESTIVAL...'
         });
         var _url = $scope.Host + 'App';
-        AppService.Service(_url, null, $scope.App).then(_msgSuccess, _msgFail);
-        $scope.IsInitialize = true;
+        AppService.Service(_url, null, $scope.App).then(_msgSuccess, _msgFail);        
       };
       // ----------------------------
       // ----------------------------

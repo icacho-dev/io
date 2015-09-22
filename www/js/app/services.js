@@ -30,8 +30,6 @@
                	url = url +'/'+ id;
             }
 
-            // console.info('get' , url);
-
             $http.get(url)
                 .success(function (response, status, headers, config) {
 					f_response(result , response, status, headers, config);
@@ -49,9 +47,6 @@
             if (id != null && id != undefined) {
                	url = url +'/'+ id;
             }
-			
-			//url = 'http://localhost:12981/api/PublicService/Feed';
-            // console.info('post', url);
 
             $http.post(url , model)
                 .success(function (response, status, headers, config) {
