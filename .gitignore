@@ -28,3 +28,5 @@ local.properties
 node_modules/
 platforms/
 plugins/
+
+*.apk
