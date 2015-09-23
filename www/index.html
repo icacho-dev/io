@@ -116,7 +116,7 @@
                   <param name="src" value="img/logo-app-w.svg">
                 </object>-->
                 <div class="logo-container">
-                </div> 
+                </div>
               </div>
             </div>
             <div class="row" style="background-color:rgba(0,0,0,.5);">
@@ -356,7 +356,7 @@
                   <em>{{event.Date.MonthString}}</em>
                 </p>
               </div>
-              <div class="col">
+              <div class="col item-text-wrap">
                 <div class="item-text-wrap font-bold">
                   <span><i class="{{event.IconType}} text-muted-2x"></i></span> {{event.Event_ES}}</div>
                 <dfn class="text-muted">
@@ -369,10 +369,12 @@
                   <i class="icon ion-ios-flag-outline text-muted-2x" ng-if="event.Site_ES.length > 0"></i>
                   <span ng-if="event.Site_ES.length > 0">Lugar: {{event.Site_ES}}</span>
                 </dfn>
-                <dfn class="paragraph-wrap-text small">
-                  {{event.Description_ES}}
-                </dfn>
               </div>
+            </div>
+          </div>
+          <div class="item item-text-wrap" ng-if="event.Description_ES.length > 0">
+            <div class="font-sm">
+              {{event.Description_ES}}
             </div>
           </div>
           <!-- botones -->
@@ -468,7 +470,7 @@
             <dfn class="font-sm text-muted-2x" style="text-transform: ;">
               <span class="categoria-{{item.Categoria.Id}} label">{{item.Categoria.Title_ES}}</span> | {{item.Nacionalidad.Title_ES}}
               <br /> Director: {{item.DirectorCorto}}
-              <br/> {{item.ListEvento[0].Start}} - {{item.ListEvento[0].End}}
+              <br/> Duración(m:s) {{item.Duracion_Minutos}}:{{item.Duracion_Segundos}}
             </dfn>
             <i class="icon ion-ios-arrow-right"></i>
           </a>
@@ -514,7 +516,7 @@
         <!--/sede -->
         <!-- random sponsor-->
         <!--<div class="list">
-          <div class="item item-divider text-muted">
+          <div class="item item-divider text-muted" ng-if="consoleActive">
             sParent {{sParent = randListIndex(App.ListSponsor.length)}}
           </div>
           <div class="item">
@@ -781,8 +783,8 @@
         <div class="list card" ng-if="activeShortFilm.ListEvento.length > 0">
           <div class="item item-stable item-icon-right">
             <i class="icon ion-android-calendar"></i> Eventos
-          </div>
-          <a class="item item-icon-left item-icon-right" ng-repeat="item in activeShortFilm.ListEvento" ng-href="#/app/event/{{item.Id}}/{{item.TypeFilter}}">
+          </div> 
+          <a class="item item-icon-left item-icon-right item-text-wrap" ng-repeat="item in activeShortFilm.ListEvento" ng-href="#/app/event/{{item.Id}}/{{item.TypeFilter}}">
             <i class="{{item.IconType}} text-muted-2x"></i>
             <h2 class="">{{item.Type_ES}}</h2>
             <small class="font-sm text-muted text-uppercase">{{item.Date.DateString}}, {{item.Place.Title_ES}}</small><br/>
