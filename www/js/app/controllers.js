@@ -87,7 +87,7 @@ angular.module('app.controllers', ['ionic'])
           template: 'ECOFILM FESTIVAL...'
         });
         var _url = $scope.Host + 'App';
-        AppService.Service(_url, null, $scope.App).then(_msgSuccess, _msgFail);        
+        AppService.Service(_url, null, $scope.App).then(_msgSuccess, _msgFail);
       };
       // ----------------------------
       // ----------------------------
@@ -211,7 +211,7 @@ angular.module('app.controllers', ['ionic'])
               $scope.loadingOfficialSelection = false;
               $state.go('app.home');
             };
-            
+
             if(!$scope.loadingOfficialSelection)
             {
             	$ionicLoading.show({
@@ -280,7 +280,7 @@ angular.module('app.controllers', ['ionic'])
       return r;
     };
   })
-  
+
   .directive('clickLink', ['$location', function($location) {
     return {
       link: function(scope, element, attrs) {
