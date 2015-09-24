@@ -144,9 +144,8 @@ a.roundCornersAllDark:hover {
 }
 .item.active, .item.activated, .item-complex.active .item-content, .item-complex.activated .item-content, .item .item-content.active, .item .item-content.activated {
     border-color: #ccc;
-    background-color: #ffffff!important;
-    border-left: solid 5px #E64444;
-    color: #E64444;
+    background-color: #F3F3F3!important;    
+    color: #E64444!important;
 }
 .item-blueLight {
   border-color: #4D92D8;
