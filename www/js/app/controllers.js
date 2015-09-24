@@ -87,7 +87,7 @@ angular.module('app.controllers', ['ionic'])
           template: 'ECOFILM FESTIVAL...'
         });
         var _url = $scope.Host + 'App';
-        AppService.Service(_url, null, $scope.App).then(_msgSuccess, _msgFail);        
+        AppService.Service(_url, null, $scope.App).then(_msgSuccess, _msgFail);
       };
       // ----------------------------
       // ----------------------------
@@ -139,23 +139,22 @@ angular.module('app.controllers', ['ionic'])
       // ----------------------------
       // ----------------------------
       // ----------------------------
-      // ----------------------------
-      // ----------------------------
-      // ----------------------------
-      $scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+      $scope.action = function(toState , toParams){
+          // ----------------------------
+        // console.info('toState' , toState);
         // ----------------------------
-        // console.info('toState' , toState.name);
-        // ----------------------------
-        switch (toState.name) {
+        switch (toState) {
           case 'app.home':
             if (!$scope.IsInitialize) {
               $scope.Initialize(false);
             } else {
               var _msgSuccess = function(data) {
                 $scope.loadingReloadHomeFeed = false;
+                $state.go(toState);
               };
               var _msgFail = function(data) {
                 $scope.loadingReloadHomeFeed = false;
+                $state.go(toState);
               };
               $scope.loadingReloadHomeFeed = true;
               var _url = $scope.Host + 'Feed';
@@ -171,6 +170,7 @@ angular.module('app.controllers', ['ionic'])
             if (!$scope.IsInitialize) $scope.Initialize(false);
             var _msgSuccess = function(data) {
               $ionicLoading.hide();
+              $state.go(toState);
             };
             var _msgFail = function(data) {
               $ionicLoading.hide();
@@ -199,7 +199,134 @@ angular.module('app.controllers', ['ionic'])
           case 'app.official':
             if (!$scope.IsInitialize) $scope.Initialize(false);
             var _msgSuccess = function(data) {
-           	  $scope.loadingOfficialSelection = true;
+              $scope.loadingOfficialSelection = true;
+              $scope.IsOnline = true;
+              $scope.GetListOfficialSelectionShortFilmFilter();
+              $ionicLoading.hide();
+              $state.go(toState);
+            };
+            var _msgFail = function(data) {
+              $ionicLoading.hide();
+              $scope.IsOnline = false;
+              $scope.loadingOfficialSelection = false;
+              $state.go('app.home');
+            };
+
+            if(!$scope.loadingOfficialSelection)
+            {
+              $ionicLoading.show({
+                template: 'ECOFILM 2015 Evento ...'
+              });
+              var _url = $scope.Host + 'OfficialSelection';
+              AppService.Service(_url, null, $scope.OfficialSelection).then(_msgSuccess, _msgFail);
+            }
+            break;
+
+          case 'app.winners':
+            var _msgSuccess = function(data) {
+              $ionicLoading.hide();
+              $scope.loadingWinners = true;
+              $state.go(toState);
+            };
+            var _msgFail = function(data) {
+              $ionicLoading.hide();
+              $scope.loadingWinners = false;
+              $scope.IsOnline = false;
+              $state.go('app.home');
+            };
+            if(!$scope.loadingWinners)
+            {
+              $ionicLoading.show({
+                template: 'ECOFILM 2015 Evento ...'
+              });
+              var _url = $scope.Host + 'Winners';
+              AppService.Service(_url, null, $scope.Winners).then(_msgSuccess, _msgFail);
+            }
+            break;
+
+          case 'app.shortfilm':
+            var _msgSuccess = function(data) {
+              $ionicLoading.hide();
+            };
+            var _msgFail = function(data) {
+              $ionicLoading.hide();
+              $scope.IsOnline = false;
+              $state.go('app.home');
+            };
+            $ionicLoading.show({
+              template: 'ECOFILM 2015 Evento ...'
+            });
+            var _url = $scope.Host + 'ShortFilm';
+            AppService.Service(_url, toParams.id, $scope.activeShortFilm).then(_msgSuccess, _msgFail);
+            break;
+
+        }
+
+      };
+
+
+      // ----------------------------
+      // ----------------------------
+      // ----------------------------
+      $scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
+        // ----------------------------
+        // console.info('toState' , toState);
+        // ----------------------------
+        switch (toState.name) {
+          case 'app.home':
+            if (!$scope.IsInitialize) {
+              $scope.Initialize(false);
+            } else {
+              var _msgSuccess = function(data) {
+                $scope.loadingReloadHomeFeed = false;
+              };
+              var _msgFail = function(data) {
+                $scope.loadingReloadHomeFeed = false;
+              };
+              $scope.loadingReloadHomeFeed = true;
+              var _url = $scope.Host + 'Feed';
+              AppService.Service(_url, null, $scope.App.Feed).then(_msgSuccess, _msgFail);
+            }
+            break;
+
+          case 'app.schedule':
+            if (!$scope.IsInitialize) $scope.Initialize(true);
+            break;
+
+          case 'app.event':
+            if (!$scope.IsInitialize) $scope.Initialize(false);
+            var _msgSuccess = function(data) {
+              $ionicLoading.hide();
+             // $state.go('app.event');
+            };
+            var _msgFail = function(data) {
+              $ionicLoading.hide();
+              $state.go('app.home');
+            };
+            $filter('filter')($scope.ListEventFilter, function(event) {
+              if (event.Id == toParams.Id && event.TypeFilter == toParams.TypeFilter) {
+                $ionicLoading.show({
+                  template: 'ECOFILM 2015 Evento ...'
+                });
+                var _url = $scope.Host + event.DetailUrl;
+                AppService.Service(_url, event.Id, $scope.EventDetail).then(_msgSuccess, _msgFail);
+              }
+            });
+
+            break;
+
+          case 'app.places':
+            if (!$scope.IsInitialize) $scope.Initialize(true);
+            break;
+
+          case 'app.sponsor':
+            if (!$scope.IsInitialize) $scope.Initialize(true);
+            break;
+
+          case 'app.official':
+            if (!$scope.IsInitialize) $scope.Initialize(false);
+            var _msgSuccess = function(data) {
+              $scope.loadingOfficialSelection = true;
               $scope.IsOnline = true;
               $scope.GetListOfficialSelectionShortFilmFilter();
               $ionicLoading.hide();
@@ -210,14 +337,14 @@ angular.module('app.controllers', ['ionic'])
               $scope.loadingOfficialSelection = false;
               $state.go('app.home');
             };
-            
+
             if(!$scope.loadingOfficialSelection)
             {
-            	$ionicLoading.show({
-	              template: 'ECOFILM FESTIVAL...'
-	            });
-	            var _url = $scope.Host + 'OfficialSelection';
-	            AppService.Service(_url, null, $scope.OfficialSelection).then(_msgSuccess, _msgFail);
+              $ionicLoading.show({
+                template: 'ECOFILM 2015 Evento ...'
+              });
+              var _url = $scope.Host + 'OfficialSelection';
+              AppService.Service(_url, null, $scope.OfficialSelection).then(_msgSuccess, _msgFail);
             }
             break;
 
@@ -234,11 +361,11 @@ angular.module('app.controllers', ['ionic'])
             };
             if(!$scope.loadingWinners)
             {
-            	$ionicLoading.show({
-	              template: 'ECOFILM FESTIVAL...'
-	            });
-	            var _url = $scope.Host + 'Winners';
-	            AppService.Service(_url, null, $scope.Winners).then(_msgSuccess, _msgFail);
+              $ionicLoading.show({
+                template: 'ECOFILM 2015 Evento ...'
+              });
+              var _url = $scope.Host + 'Winners';
+              AppService.Service(_url, null, $scope.Winners).then(_msgSuccess, _msgFail);
             }
             break;
 
@@ -252,7 +379,7 @@ angular.module('app.controllers', ['ionic'])
               $state.go('app.home');
             };
             $ionicLoading.show({
-              template: 'ECOFILM FESTIVAL...'
+              template: 'ECOFILM 2015 Evento ...'
             });
             var _url = $scope.Host + 'ShortFilm';
             AppService.Service(_url, toParams.id, $scope.activeShortFilm).then(_msgSuccess, _msgFail);
@@ -279,13 +406,13 @@ angular.module('app.controllers', ['ionic'])
       return r;
     };
   })
-  
-  .directive('clickLink', ['$location', function($location) {
+
+  .directive('clickLink', ['$state', function($state) {
     return {
       link: function(scope, element, attrs) {
         element.on('click', function() {
           scope.$apply(function() {
-            $location.path(attrs.clickLink);
+            $state.go( attrs.clickLink );
           });
         });
       }
