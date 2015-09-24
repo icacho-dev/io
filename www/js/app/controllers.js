@@ -326,7 +326,7 @@ angular.module('app.controllers', ['ionic'])
           case 'app.official':
             if (!$scope.IsInitialize) $scope.Initialize(false);
             var _msgSuccess = function(data) {
-           	  $scope.loadingOfficialSelection = true;
+              $scope.loadingOfficialSelection = true;
               $scope.IsOnline = true;
               $scope.GetListOfficialSelectionShortFilmFilter();
               $ionicLoading.hide();
@@ -340,11 +340,11 @@ angular.module('app.controllers', ['ionic'])
 
             if(!$scope.loadingOfficialSelection)
             {
-            	$ionicLoading.show({
+              $ionicLoading.show({
                 template: 'ECOFILM 2015 Evento ...'
               });
-	            var _url = $scope.Host + 'OfficialSelection';
-	            AppService.Service(_url, null, $scope.OfficialSelection).then(_msgSuccess, _msgFail);
+              var _url = $scope.Host + 'OfficialSelection';
+              AppService.Service(_url, null, $scope.OfficialSelection).then(_msgSuccess, _msgFail);
             }
             break;
 
@@ -361,11 +361,11 @@ angular.module('app.controllers', ['ionic'])
             };
             if(!$scope.loadingWinners)
             {
-            	$ionicLoading.show({
+              $ionicLoading.show({
                 template: 'ECOFILM 2015 Evento ...'
               });
-	            var _url = $scope.Host + 'Winners';
-	            AppService.Service(_url, null, $scope.Winners).then(_msgSuccess, _msgFail);
+              var _url = $scope.Host + 'Winners';
+              AppService.Service(_url, null, $scope.Winners).then(_msgSuccess, _msgFail);
             }
             break;
 
@@ -412,7 +412,6 @@ angular.module('app.controllers', ['ionic'])
       link: function(scope, element, attrs) {
         element.on('click', function() {
           scope.$apply(function() {
-            //$location.path(attrs.clickLink);
             $state.go( attrs.clickLink );
           });
         });
