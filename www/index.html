@@ -37,8 +37,6 @@
   <script id="templates/app-menu.html" type="text/ng-template">
     <ion-side-menus enable-menu-with-back-views="true">
 
-<<<<<<< HEAD
-=======
       <ion-side-menu-content>
         <ion-nav-bar class="bar-dark">
           <ion-nav-back-button></ion-nav-back-button>
@@ -71,7 +69,6 @@
         </ion-content>
       </ion-side-menu>
 
->>>>>>> master
       <ion-side-menu side="left">
         <ion-content>
           <div class="row row-no-padding padding-top padding-bottom">
@@ -104,39 +101,8 @@
         </ion-content>
       </ion-side-menu>
 
-      <ion-side-menu-content>
-        <ion-nav-bar class="bar-dark">
-          <ion-nav-back-button></ion-nav-back-button>
-          <ion-nav-buttons side="left">
-            <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
-          </ion-nav-buttons>
-          <ion-nav-buttons side="right" ng-show="IsOnline">
-            <button class="button button-icon button-clear ion-android-share-alt" menu-toggle="right"></button>
-          </ion-nav-buttons>
-        </ion-nav-bar>
-
-        <ion-nav-view name="menuContent"></ion-nav-view>
-      </ion-side-menu-content>
-
-      <ion-side-menu side="right" ng-if="IsOnline">
-        <ion-header-bar class="bar-calm">
-          <h1 class="title">COMUNIDAD ECOFILM</h1>
-        </ion-header-bar>
-        <ion-content>
-          <div class="list">
-            <div class="item item-text-wrap item-icon-right" ng-repeat="item in listRighFeed" ng-click="openDetail(item.Link)" ng-if="item.Message.length > 0">
-              <i class=" {{item.Icon}} "></i>
-              <small class="font-bold">@EcofilmFestivalMx</small>
-              <small class="text-muted">{{item.Message}}</small>
-              <br />
-              <span class="text-muted-2x font-sm">{{item.Update}}</span>
-            </div>
-          </div>
-          <ion-infinite-scroll on-infinite="LoadRighFeed()" distance="1%"></ion-infinite-scroll>
-        </ion-content>
-      </ion-side-menu>
-
     </ion-side-menus>
+
   </script>
 
   <script id="templates/app-home.html" type="text/ng-template">
