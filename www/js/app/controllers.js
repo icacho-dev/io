@@ -87,7 +87,7 @@ angular.module('app.controllers', ['ionic'])
           template: 'ECOFILM FESTIVAL...'
         });
         var _url = $scope.Host + 'App';
-        AppService.Service(_url, null, $scope.App).then(_msgSuccess, _msgFail);
+        AppService.Service(_url, null, $scope.App).then(_msgSuccess, _msgFail);        
       };
       // ----------------------------
       // ----------------------------
@@ -144,7 +144,7 @@ angular.module('app.controllers', ['ionic'])
       // ----------------------------
       $scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams) {
         // ----------------------------
-        // console.info('toState' , toState);
+        // console.info('toState' , toState.name);
         // ----------------------------
         switch (toState.name) {
           case 'app.home':
@@ -171,7 +171,6 @@ angular.module('app.controllers', ['ionic'])
             if (!$scope.IsInitialize) $scope.Initialize(false);
             var _msgSuccess = function(data) {
               $ionicLoading.hide();
-              $state.go('app.event');
             };
             var _msgFail = function(data) {
               $ionicLoading.hide();
@@ -211,7 +210,7 @@ angular.module('app.controllers', ['ionic'])
               $scope.loadingOfficialSelection = false;
               $state.go('app.home');
             };
-
+            
             if(!$scope.loadingOfficialSelection)
             {
             	$ionicLoading.show({
@@ -280,7 +279,7 @@ angular.module('app.controllers', ['ionic'])
       return r;
     };
   })
-
+  
   .directive('clickLink', ['$location', function($location) {
     return {
       link: function(scope, element, attrs) {
