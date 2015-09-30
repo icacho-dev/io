@@ -179,7 +179,7 @@ angular.module('app.controllers', ['ionic'])
             $filter('filter')($scope.ListEventFilter, function(event) {
               if (event.Id == toParams.Id && event.TypeFilter == toParams.TypeFilter) {
                 $ionicLoading.show({
-                  template: 'ECOFILM 2015 Evento ...'
+                  template: 'ECOFILM FESTIVAL...'
                 });
                 var _url = $scope.Host + event.DetailUrl;
                 AppService.Service(_url, event.Id, $scope.EventDetail).then(_msgSuccess, _msgFail);
@@ -215,7 +215,7 @@ angular.module('app.controllers', ['ionic'])
             if(!$scope.loadingOfficialSelection)
             {
               $ionicLoading.show({
-                template: 'ECOFILM 2015 Evento ...'
+                template: 'ECOFILM FESTIVAL...'
               });
               var _url = $scope.Host + 'OfficialSelection';
               AppService.Service(_url, null, $scope.OfficialSelection).then(_msgSuccess, _msgFail);
@@ -237,7 +237,7 @@ angular.module('app.controllers', ['ionic'])
             if(!$scope.loadingWinners)
             {
               $ionicLoading.show({
-                template: 'ECOFILM 2015 Evento ...'
+                template: 'ECOFILM FESTIVAL...'
               });
               var _url = $scope.Host + 'Winners';
               AppService.Service(_url, null, $scope.Winners).then(_msgSuccess, _msgFail);
@@ -379,7 +379,7 @@ angular.module('app.controllers', ['ionic'])
               $state.go('app.home');
             };
             $ionicLoading.show({
-              template: 'ECOFILM 2015 Evento ...'
+              template: 'ECOFILM FESTIVAL...'
             });
             var _url = $scope.Host + 'ShortFilm';
             AppService.Service(_url, toParams.id, $scope.activeShortFilm).then(_msgSuccess, _msgFail);
@@ -407,12 +407,12 @@ angular.module('app.controllers', ['ionic'])
     };
   })
 
-  .directive('clickLink', ['$state', function($state) {
+  .directive('clickLink', ['$location', function($location) {
     return {
       link: function(scope, element, attrs) {
         element.on('click', function() {
           scope.$apply(function() {
-            $state.go( attrs.clickLink );
+            $location.path(attrs.clickLink);
           });
         });
       }
