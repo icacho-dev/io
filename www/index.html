@@ -44,7 +44,7 @@
             <button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
           </ion-nav-buttons>
           <ion-nav-buttons side="right" ng-show="IsOnline">
-            <button class="button button-icon button-clear ion-android-share-alt" menu-toggle="right"  ng-show="IsOnline"></button>
+            <button class="button button-icon button-clear ion-android-share-alt" menu-toggle="right"></button>            
           </ion-nav-buttons>
         </ion-nav-bar>
 
@@ -357,7 +357,7 @@
                   <em>{{event.Date.MonthString}}</em>
                 </p>
               </div>
-              <div class="col">
+              <div class="col item-text-wrap">
                 <div class="item-text-wrap font-bold">
                   <span><i class="{{event.IconType}} text-muted-2x"></i></span> {{event.Event_ES}}</div>
                 <dfn class="text-muted">
@@ -369,11 +369,13 @@
                   <br />
                   <i class="icon ion-ios-flag-outline text-muted-2x" ng-if="event.Site_ES.length > 0"></i>
                   <span ng-if="event.Site_ES.length > 0">Lugar: {{event.Site_ES}}</span>
-                </dfn>
-                <dfn class="paragraph-wrap-text small">
-                  {{event.Description_ES}}
-                </dfn>
+                </dfn>                
               </div>
+            </div>
+          </div>
+          <div class="item item-text-wrap" ng-if="event.Description_ES.length > 0">
+            <div class="font-sm">
+              {{event.Description_ES}}
             </div>
           </div>
           <!-- botones -->
@@ -469,7 +471,7 @@
             <dfn class="font-sm text-muted-2x" style="text-transform: ;">
               <span class="categoria-{{item.Categoria.Id}} label">{{item.Categoria.Title_ES}}</span> | {{item.Nacionalidad.Title_ES}}
               <br /> Director: {{item.DirectorCorto}}
-              <br/> {{item.ListEvento[0].Start}} - {{item.ListEvento[0].End}}
+              <br/> Duración(m:s) {{item.Duracion_Minutos}}:{{item.Duracion_Segundos}}
             </dfn>
             <i class="icon ion-ios-arrow-right"></i>
           </a>
